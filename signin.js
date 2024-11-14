@@ -1,27 +1,16 @@
 // 获取 qrcode 并打开新标签页
-fetch(dataUrl)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        const qrtime = data.time;
-        console.log('data:', data);
-        tipText.textContent = formatDate(qrtime) + ",获取成功:";
-        const qrcodeValue = data.qrcode;
-        if (qrcodeValue) {
-            newUrl = `https://api.cl2wm.cn/api/qrcode/code?text=${qrcodeValue}`;
-            window.open(newUrl, '_blank');
-        } else {
-            console.error('No qrcode value found in the response.');
-        }
-    })
-    .catch(error => {
-        tipText.textContent = "获取失败:" + qrcodeUrl;
-        console.error('Error:', error.message);
-    });
+fetchData(data => {
+    const qrtime = data.time;
+    console.log('data:', data);
+    tipText.textContent = formatDate(qrtime) + ",获取成功:";
+    const qrcodeValue = data.qrcode;
+    if (qrcodeValue) {
+        newUrl = `https://api.cl2wm.cn/api/qrcode/code?text=${qrcodeValue}`;
+        window.open(newUrl, '_blank');
+    } else {
+        console.error('No qrcode value found in the response.');
+    }
+});
 function formatDate(milliseconds) {
     const date = new Date(milliseconds);
     const year = date.getFullYear();
