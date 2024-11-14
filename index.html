@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <style>
+        .largeLabel {
+            font-size: 50px;
+            padding: 5px 5px;
+        }
+        .largeSwitch {
+            width: 30px;
+            height: 30px;
+        }
+        #signInButton {
+            font-size: 200px;
+            padding: 10px 20px;
+        }
+        #saveSecretButton, #openLinkButton {
+            font-size: 50px;
+            padding: 5px 5px;
+        }
+        #secretInput {
+            font-size: 50px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Secret 输入框和保存按钮 -->
+    <label for="secretInput" class="largeLabel">Secret:</label>
+    <input type="text" id="secretInput" class="largeLabel">
+    <button id="saveSecretButton">保存Secret</button>
+    <button id="openLinkButton">查看数据</button>
+    <br>
+    <!-- <h1>Hello World!</h1> -->
+
+    <!-- 开关按钮（默认隐藏） -->
+    <br>
+    <label id="toggleLabel" class="largeLabel" style="display: none;">
+        <input type="checkbox" id="toggleSwitch" class="largeSwitch">
+        Enabled
+    </label>
+
+    <br>
+    <!-- 准备开关按钮（默认隐藏） -->
+    <label id="readyToggleLabel" class="largeLabel" style="display: none;">
+        <input type="checkbox" id="readyToggleSwitch" class="largeSwitch">
+        Ready
+    </label>
+
+    <br>
+    <text id="toggleText" class="largeLabel">点击按钮进行设置</text>
+    <br>
+    <text id="lastRequestTimeText" class="largeLabel">上次获取二维码时间</text>
+
+    <br>
+    <!-- SignIn 按钮 -->
+    <button id="signInButton">登录</button>
+    <script src="common.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>
