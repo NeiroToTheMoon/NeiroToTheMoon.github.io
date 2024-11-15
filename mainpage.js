@@ -3,6 +3,39 @@ const signinHour = 9;
 const now = new Date();
 console.log("now:", now);
 const currentHour = now.getHours();
+const year = now.getFullYear();
+
+// 手动维护的工作日名单
+const workdays = {
+    1: [26],
+    2: [8],
+    4: [27],
+    9: [28],
+    10: [11],
+};
+
+// 手动维护的休息日名单
+const holidays = {
+    1: [1, 28, 29, 30, 31],
+    2: [1, 2, 3, 4],
+    4: [4, 5, 6],
+    5: [1, 2, 3, 4, 5, 31],
+    6: [1, 2],
+    10: [1, 2, 3, 4, 5, 6, 7, 8],
+};
+
+function isHoliday(date) {
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return holidays[month] && holidays[month].includes(day);
+}
+
+function isWorkday(date) {
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return workdays[month] && workdays[month].includes(day);
+}
+
 if (currentHour < signinHour) {
     // 如果当前时间小于9点，当日9点刷新页面
     const targetTime = new Date();
@@ -13,28 +46,43 @@ if (currentHour < signinHour) {
         setDataValue("ready", false);
         location.reload();
     }, delay);
-} else if (currentHour >= signinHour + 1) {
+}
+else if (currentHour >= signinHour + 1) {
     // 如果当前时间大于10点，下一个工作日9点刷新页面
-    let nextDayCount;
-    if (now.getDay() === 5) {
-        // 如果今天是周五，加三天到周一
-        nextDayCount = 3;
-    } else if (now.getDay() === 6) {
-        // 如果今天是周六，加两天到周一
-        nextDayCount = 2;
-    } else {
-        // 否则加一天到明天
-        nextDayCount = 1;
+    let nextDayCount = 1;
+    let targetTime;
+    do {
+        // 获取下一天的9点
+        targetTime = new Date(now.getTime() + nextDayCount * 24 * 60 * 60 * 1000);
+        targetTime.setHours(signinHour, 0, 0, 0);
+        if (targetTime.getFullYear() > year) {
+            // 如果下一天是明年的元旦，将targetTime设置为1月2日9点
+            targetTime.setDate(2);
+            // targetTime = new Date(`${year + 1}-01-02T${signinHour}:00:00`);
+            break;
+        }
+        else if (isHoliday(targetTime)) {
+            // 如果下一天是休息日，继续往后推
+            nextDayCount++;
+        }
+        else if (isWorkday(targetTime) || (targetTime.getDay() !== 0 && targetTime.getDay() !== 6)) {
+            // 如果下一天是工作日，或者不是周末，跳出循环
+            break;
+        }
+        else {
+            // 如果下一天是周末，继续往后推
+            nextDayCount++;
+        }
     }
-    const targetTime = new Date(now.getTime() + nextDayCount * 24 * 60 * 60 * 1000);
-    targetTime.setHours(signinHour, 0, 0, 0);
+    while (true);
     console.log("targetTime:", targetTime);
     const delay = targetTime - now;
     setTimeout(() => {
         setDataValue("ready", false);
         location.reload();
     }, delay);
-} else {
+}
+else {
     // 如果当前时间在9-10点之间
     console.log("fetch ready");
     fetchDataValue("ready", (value) => {
@@ -42,7 +90,7 @@ if (currentHour < signinHour) {
         if (value) {
             openNewWindow();
         }
-        else{
+        else {
             // 每隔一分钟刷新一次页面
             setTimeout(() => {
                 location.reload();
