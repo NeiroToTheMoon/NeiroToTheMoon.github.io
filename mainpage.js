@@ -24,6 +24,20 @@ const holidays = {
     10: [1, 2, 3, 4, 5, 6, 7, 8],
 };
 
+// 手动指定的下一个工作日
+let manualNextWorkday;
+const savedDate = localStorage.getItem('manualNextWorkday');
+if (savedDate) {
+    manualNextWorkday = new Date(savedDate);
+}
+
+// document.addEventListener('DOMContentLoaded', () => {
+// const savedDate = localStorage.getItem('manualNextWorkday');
+if (savedDate) {
+    document.getElementById('manualNextWorkday').value = savedDate;
+}
+// });
+
 function isHoliday(date) {
     const month = date.getMonth() + 1;
     const day = date.getDate();
@@ -48,33 +62,38 @@ if (currentHour < signinHour) {
     }, delay);
 }
 else if (currentHour >= signinHour + 1) {
-    // 如果当前时间大于10点，下一个工作日9点刷新页面
-    let nextDayCount = 1;
     let targetTime;
-    do {
-        // 获取下一天的9点
-        targetTime = new Date(now.getTime() + nextDayCount * 24 * 60 * 60 * 1000);
+    if (manualNextWorkday && manualNextWorkday > now) {
+        // 如果手动指定了下一个工作日且日期大于今天，直接使用该日期
+        targetTime = new Date(manualNextWorkday);
         targetTime.setHours(signinHour, 0, 0, 0);
-        if (targetTime.getFullYear() > year) {
-            // 如果下一天是明年的元旦，将targetTime设置为1月2日9点
-            targetTime.setDate(2);
-            // targetTime = new Date(`${year + 1}-01-02T${signinHour}:00:00`);
-            break;
+    } else {
+        // 如果没有手动指定下一个工作日，或者指定的日期小于等于今天，继续原有逻辑
+        let nextDayCount = 1;
+        do {
+            // 获取下一天的9点
+            targetTime = new Date(now.getTime() + nextDayCount * 24 * 60 * 60 * 1000);
+            targetTime.setHours(signinHour, 0, 0, 0);
+            if (targetTime.getFullYear() > year) {
+                // 如果下一天是明年的元旦，将targetTime设置为1月2日9点
+                targetTime.setDate(2);
+                break;
+            }
+            else if (isHoliday(targetTime)) {
+                // 如果下一天是休息日，继续往后推
+                nextDayCount++;
+            }
+            else if (isWorkday(targetTime) || (targetTime.getDay() !== 0 && targetTime.getDay() !== 6)) {
+                // 如果下一天是工作日，或者不是周末，跳出循环
+                break;
+            }
+            else {
+                // 如果下一天是周末，继续往后推
+                nextDayCount++;
+            }
         }
-        else if (isHoliday(targetTime)) {
-            // 如果下一天是休息日，继续往后推
-            nextDayCount++;
-        }
-        else if (isWorkday(targetTime) || (targetTime.getDay() !== 0 && targetTime.getDay() !== 6)) {
-            // 如果下一天是工作日，或者不是周末，跳出循环
-            break;
-        }
-        else {
-            // 如果下一天是周末，继续往后推
-            nextDayCount++;
-        }
+        while (true);
     }
-    while (true);
     console.log("targetTime:", targetTime);
     const delay = targetTime - now;
     setTimeout(() => {
@@ -100,6 +119,14 @@ else {
 }
 
 document.getElementById('openButton').addEventListener('click', openNewWindow);
+
+document.getElementById('saveButton').addEventListener('click', () => {
+    const dateInput = document.getElementById('manualNextWorkday').value;
+    if (dateInput) {
+        localStorage.setItem('manualNextWorkday', dateInput);
+        location.reload();
+    }
+});
 
 function openNewWindow() {
     window.open('https://sso.oa.wanmei.net/PWForms/', '_blank');
