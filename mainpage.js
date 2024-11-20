@@ -12,6 +12,12 @@ if (savedDate) {
     manualNextWorkday = new Date(savedDate);
 }
 
+// 获取存储的首页链接
+const savedHomePageUrl = localStorage.getItem('homePageUrl');
+if (savedHomePageUrl) {
+    document.getElementById('homePageUrl').value = savedHomePageUrl;
+}
+
 // document.addEventListener('DOMContentLoaded', () => {
 if (savedDate) {
     document.getElementById('manualNextWorkday').value = savedDate;
@@ -59,6 +65,12 @@ else {
 
 document.getElementById('openButton').addEventListener('click', openNewWindow);
 
+document.getElementById('saveHomePageButton').addEventListener('click', () => {
+    const homePageUrl = document.getElementById('homePageUrl').value;
+    localStorage.setItem('homePageUrl', homePageUrl);
+    location.reload();
+});
+
 document.getElementById('saveButton').addEventListener('click', () => {
     const dateInput = document.getElementById('manualNextWorkday').value;
     if (dateInput) {
@@ -74,5 +86,8 @@ document.getElementById('clearButton').addEventListener('click', () => {
 });
 
 function openNewWindow() {
-    window.open('https://sso.oa.wanmei.net/PWForms/', '_blank');
+    const homePageUrl = localStorage.getItem('homePageUrl');
+    if (homePageUrl) {
+        window.open(homePageUrl, '_blank');
+    }
 }
