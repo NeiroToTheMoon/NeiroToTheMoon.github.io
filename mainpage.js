@@ -41,7 +41,7 @@ testOpenNewTabCheckbox.addEventListener('change', () => {
 let targetTime = getTargetTime(currentHour, signinHour, now);
 console.log("targetTime:", targetTime);
 const savedTestOpenNewTab = localStorage.getItem('testOpenNewTab');
-if(savedTestOpenNewTab){
+if(savedTestOpenNewTab == 'true'){
     openNewWindow();
 }
 else{
