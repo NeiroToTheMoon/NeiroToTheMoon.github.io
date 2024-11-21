@@ -5,26 +5,20 @@ console.log("now:", now);
 const currentHour = now.getHours();
 const year = now.getFullYear();
 
-// 手动指定的下一个工作日
-let manualNextWorkday;
-const savedDate = localStorage.getItem('manualNextWorkday');
-if (savedDate) {
-    manualNextWorkday = new Date(savedDate);
-}
-
 // 获取存储的首页链接
 const savedHomePageUrl = localStorage.getItem('homePageUrl');
 if (savedHomePageUrl) {
-    document.getElementById('homePageUrl').value = savedHomePageUrl;
+    homePageUrl.value = savedHomePageUrl;
 }
 
-// document.addEventListener('DOMContentLoaded', () => {
+let savedManualNextWorkday;
+const savedDate = localStorage.getItem('manualNextWorkday');
 if (savedDate) {
-    document.getElementById('manualNextWorkday').value = savedDate;
+    manualNextWorkdayDate.value = savedDate;
+    savedManualNextWorkday = new Date(savedDate);
 }
-// });
 
-function getTargetTime(currentHour, signinHour, now, manualNextWorkday) {
+function getTargetTime(currentHour, signinHour, now) {
     if (currentHour < signinHour) {
         // 如果当前时间小于9点，当日9点刷新页面
         const targetTime = new Date();
@@ -32,56 +26,68 @@ function getTargetTime(currentHour, signinHour, now, manualNextWorkday) {
         return targetTime;
     }
     else if (currentHour >= signinHour + 1) {
-        const targetTime = getNextWorkday(now, signinHour, manualNextWorkday);
+        // 手动指定的下一个工作日
+        const targetTime = getNextWorkday(now, signinHour, savedManualNextWorkday);
         return targetTime;
     }
 }
 
-let targetTime = getTargetTime(currentHour, signinHour, now, manualNextWorkday);
+
+// 监听开关按钮的变化并更新状态
+testOpenNewTabCheckbox.addEventListener('change', () => {
+    localStorage.setItem('testOpenNewTab', testOpenNewTabCheckbox.checked);
+});
+
+let targetTime = getTargetTime(currentHour, signinHour, now);
 console.log("targetTime:", targetTime);
-if (targetTime) {
-    const delay = targetTime - now;
-    setTimeout(() => {
-        setDataValue("ready", false);
-        location.reload();
-    }, delay);
+const savedTestOpenNewTab = localStorage.getItem('testOpenNewTab');
+if(savedTestOpenNewTab){
+    openNewWindow();
 }
-else {
-    // 如果当前时间在9-10点之间
-    console.log("fetch ready");
-    fetchDataValue("ready", (value) => {
-        console.log("ready:", value);
-        if (value) {
-            openNewWindow();
-        }
-        else {
-            // 每隔一分钟刷新一次页面
-            setTimeout(() => {
-                location.reload();
-            }, 60000);
-        }
-    });
-}
+else{
+    if (targetTime) {
+        const delay = targetTime - now;
+        setTimeout(() => {
+            setDataValue("ready", false);
+            location.reload();
+        }, delay);
+    }
+    else {
+        // 如果当前时间在9-10点之间
+        console.log("fetch ready");
+        fetchDataValue("ready", (value) => {
+            console.log("ready:", value);
+            if (value) {
+                openNewWindow();
+            }
+            else {
+                // 每隔一分钟刷新一次页面
+                setTimeout(() => {
+                    location.reload();
+                }, 60000);
+            }
+        });
+    }}
 
-document.getElementById('openButton').addEventListener('click', openNewWindow);
+    openButton.addEventListener('click', openNewWindow);
 
-document.getElementById('saveHomePageButton').addEventListener('click', () => {
+saveHomePageButton.addEventListener('click', () => {
     const homePageUrl = document.getElementById('homePageUrl').value;
     localStorage.setItem('homePageUrl', homePageUrl);
     location.reload();
 });
 
-document.getElementById('saveButton').addEventListener('click', () => {
-    const dateInput = document.getElementById('manualNextWorkday').value;
+saveButton.addEventListener('click', () => {
+    const dateInput = manualNextWorkdayDate.value;
     if (dateInput) {
         localStorage.setItem('manualNextWorkday', dateInput);
         location.reload();
     }
 });
 
-document.getElementById('clearButton').addEventListener('click', () => {
+clearButton.addEventListener('click', () => {
     localStorage.removeItem('manualNextWorkday');
-    document.getElementById('manualNextWorkday').value = '';
+    manualNextWorkdayDate.value = '';
     location.reload();
 });
 
