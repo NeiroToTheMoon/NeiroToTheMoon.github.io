@@ -30,18 +30,22 @@ signInButton.addEventListener('click', () => {
 document.addEventListener('DOMContentLoaded', () => {
     const savedSecret = localStorage.getItem('secret');
     if (savedSecret) {
-        document.getElementById('secretInput').value = savedSecret;
+        secretInput.value = savedSecret;
     }
 });
 
-document.getElementById('saveSecretButton').addEventListener('click', () => {
-    const secretValue = document.getElementById('secretInput').value;
+saveSecretButton.addEventListener('click', () => {
+    const secretValue = secretInput.value;
     localStorage.setItem('secret', secretValue);
     alert('Secret saved!');
 });
 
-document.getElementById('openLinkButton').addEventListener('click', () => {
-    const secretValue = document.getElementById('secretInput').value;
+openLinkButton.addEventListener('click', () => {
+    const secretValue = secretInput.value;
     const url = `https://store.zapier.com/api/records?secret=${secretValue}`;
     window.open(url, '_blank');
+});
+
+refreshButton.addEventListener('click', () => {
+    location.reload();
 });

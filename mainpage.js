@@ -18,33 +18,18 @@ if (savedDate) {
     savedManualNextWorkday = new Date(savedDate);
 }
 
-function getTargetTime(currentHour, signinHour, now) {
-    if (currentHour < signinHour) {
-        // 如果当前时间小于9点，当日9点刷新页面
-        const targetTime = new Date();
-        targetTime.setHours(signinHour, 0, 0, 0);
-        return targetTime;
-    }
-    else if (currentHour >= signinHour + 1) {
-        // 手动指定的下一个工作日
-        const targetTime = getNextWorkday(now, signinHour, savedManualNextWorkday);
-        return targetTime;
-    }
-}
-
-
 // 监听开关按钮的变化并更新状态
 testOpenNewTabCheckbox.addEventListener('change', () => {
     localStorage.setItem('testOpenNewTab', testOpenNewTabCheckbox.checked);
 });
 
-let targetTime = getTargetTime(currentHour, signinHour, now);
-console.log("targetTime:", targetTime);
 const savedTestOpenNewTab = localStorage.getItem('testOpenNewTab');
 if(savedTestOpenNewTab == 'true'){
     openNewWindow();
 }
 else{
+    let targetTime = getTargetTime(currentHour, signinHour, now);
+    console.log("targetTime:", targetTime);
     if (targetTime) {
         const delay = targetTime - now;
         setTimeout(() => {

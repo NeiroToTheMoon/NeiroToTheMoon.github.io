@@ -130,3 +130,17 @@ function getNextWorkday(now, signinHour, manualNextWorkday) {
     }
     return targetTime;
 }
+
+function getTargetTime(currentHour, signinHour, now) {
+    if (currentHour < signinHour) {
+        // 如果当前时间小于9点，当日9点刷新页面
+        const targetTime = new Date();
+        targetTime.setHours(signinHour, 0, 0, 0);
+        return targetTime;
+    }
+    else if (currentHour >= signinHour + 1) {
+        // 获取下一个工作日的9点
+        const targetTime = getNextWorkday(now, signinHour, savedManualNextWorkday);
+        return targetTime;
+    }
+}
