@@ -24,13 +24,14 @@ testOpenNewTabCheckbox.addEventListener('change', () => {
 });
 
 const savedTestOpenNewTab = localStorage.getItem('testOpenNewTab');
-if(savedTestOpenNewTab == 'true'){
+if (savedTestOpenNewTab == 'true') {
     openNewWindow();
 }
-else{
+else {
     let targetTime = getTargetTime(currentHour, signinHour, now);
     console.log("targetTime:", targetTime);
     if (targetTime) {
+        // 在下一个9点（可能是今天或下一个工作日），刷新页面
         const delay = targetTime - now;
         setTimeout(() => {
             setDataValue("ready", false);
@@ -52,9 +53,10 @@ else{
                 }, 60000);
             }
         });
-    }}
+    }
+}
 
-    openButton.addEventListener('click', openNewWindow);
+openButton.addEventListener('click', openNewWindow);
 
 saveHomePageButton.addEventListener('click', () => {
     const homePageUrl = document.getElementById('homePageUrl').value;
@@ -77,6 +79,9 @@ clearButton.addEventListener('click', () => {
 });
 
 function openNewWindow() {
+    // 设置当前时间
+    setDataValue("lastOpenTime", now.getTime());
+    // 打开新窗口
     const homePageUrl = localStorage.getItem('homePageUrl');
     if (homePageUrl) {
         window.open(homePageUrl, '_blank');

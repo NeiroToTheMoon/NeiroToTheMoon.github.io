@@ -10,6 +10,8 @@ fetchData(data => {
     // data.time转成date
     const lastRequestDate = new Date(data.time);
     lastRequestTimeText.textContent = "上次获取二维码时间:" + lastRequestDate.toLocaleString();
+    const lastOpenTime = new Date(data.lastOpenTime);
+    lastOpenTimeText.textContent = "上次打开页面时间:" + lastOpenTime.toLocaleString();
 });
 
 // 监听开关按钮的变化并更新状态

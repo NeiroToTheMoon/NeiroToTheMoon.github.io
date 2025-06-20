@@ -6,7 +6,7 @@ function getDataUrl() {
     return `https://store.zapier.com/api/records?secret=${getSecret()}`;
 }
 
-function setDataValue(newValue, key, toggleText) {
+function setDataValue(key, newValue, toggleText) {
     if (toggleText) {
         toggleText.textContent = "设置中...请等待，请勿刷新页面";
     }
@@ -16,7 +16,7 @@ function setDataValue(newValue, key, toggleText) {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ [newValue]: key })
+        body: JSON.stringify({ [key]: newValue })
     })
         .then(response => {
             if (!response.ok) {
@@ -31,13 +31,13 @@ function setDataValue(newValue, key, toggleText) {
             if (toggleText) {
                 toggleText.textContent = "设置成功";
             }
-            console.log(`${key} state updated successfully:`, data);
+            console.log(`${newValue} state updated successfully:`, data);
         })
         .catch(error => {
             if (toggleText) {
                 toggleText.textContent = "设置失败";
             }
-            console.error(`Failed to update ${key} state:`, error.message);
+            console.error(`Failed to update ${newValue} state:`, error.message);
         });
 }
 
@@ -57,7 +57,7 @@ function fetchData(callback) {
         });
 }
 
-function fetchDataValue(key, callback){
+function fetchDataValue(key, callback) {
     fetchData(data => {
         callback(data[key]);
     });
@@ -139,8 +139,9 @@ function getTargetTime(currentHour, signinHour, now) {
         return targetTime;
     }
     else if (currentHour >= signinHour + 1) {
-        // 获取下一个工作日的9点
+        // 如果当前时间大于等于10点，获取下一个工作日的9点
         const targetTime = getNextWorkday(now, signinHour, savedManualNextWorkday);
         return targetTime;
     }
+    // 如果当前时间在9-10点之间
 }
