@@ -32,9 +32,10 @@ else {
     console.log("targetTime:", targetTime);
     if (targetTime) {
         // 在下一个9点（可能是今天或下一个工作日），刷新页面
+        setDataValue("ready", false);
+        setDataValue("enabled", false);
         const delay = targetTime - now;
         setTimeout(() => {
-            setDataValue("ready", false);
             location.reload();
         }, delay);
     }
