@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook JavaScript SDK</title>
+</head>
+<body>
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId            : '3458730801106374',
+                xfbml            : true,
+                version          : 'v25.0'
+            });
+        };
+    </script>
+    <script async defer crossorigin="anonymous" 
+        src="https://connect.facebook.net/en_US/sdk.js"></script>
+
+    <!-- Facebook 根元素 -->
+    <div id="fb-root"></div>
+
+    <!-- 页面内容 -->
+    <div style="padding: 20px; font-family: Arial, sans-serif; max-width: 600px;">
+        <h1>Facebook JavaScript SDK 示例</h1>
+        
+        <div style="background-color: #fff3cd; border: 1px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px;">
+            <strong>⚠️ 注意：</strong> Facebook 登录功能需要 <strong>HTTPS</strong> 环境。
+            <br>本地测试请使用 HTTPS，或将项目部署到支持 HTTPS 的服务器。
+        </div>
+
+        <hr style="margin: 30px 0;">
+
+        <!-- Facebook 赞按钮 (不需要登录) -->
+        <h2>Facebook 赞按钮示例</h2>
+        <p>这个按钮无需登录即可使用：</p>
+        <div class="fb-like" data-href="https://www.facebook.com/" data-width="" data-layout="standard" data-action="like" data-size="large" data-show-faces="true" data-share="true"></div>
+
+        <hr style="margin: 30px 0;">
+
+        <!-- SDK 状态 -->
+        <div id="status" style="color: #666; margin-top: 20px;">
+            <p>检查 SDK 状态中...</p>
+        </div>
+
+        <script>
+            // SDK 初始化
+            window.fbAsyncInit = function() {
+                FB.init({
+                    appId            : '3458730801106374',
+                    xfbml            : true,
+                    version          : 'v25.0'
+                });
+
+                // SDK 加载成功
+                console.log('Facebook SDK 加载成功！');
+                document.getElementById('status').innerHTML = '<p style="color: green;">✓ Facebook SDK 加载成功！您可以在 HTTPS 环境下使用登录功能。</p>';
+            };
+        </script>
+    </div>
+
+</body>
+</html>
